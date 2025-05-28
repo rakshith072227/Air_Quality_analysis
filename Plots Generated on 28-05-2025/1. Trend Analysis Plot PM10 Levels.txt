@@ -1,0 +1,60 @@
+1. Trend Analysis Plot: PM10 Levels (Time Series Plot for 4 Cities)
+
+ggplot(your_data %>% filter(City %in% c("Delhi", "Mumbai", "Chennai", "Kolkata")), 
+       aes(x = Date, y = PM10, color = City)) +
+  geom_line() +
+  facet_wrap(~ City, scales = "free_y") +
+  theme_minimal(base_size = 14) +
+  labs(title = "PM10 Levels Over Time", x = "Date", y = "PM10") +
+  theme(legend.position = "none")
+
+2. Category-wise AQI Histogram
+
+ggplot(your_data, aes(x = AQI, fill = AQI_Bucket)) +
+  geom_histogram(binwidth = 50, color = "black") +
+  scale_x_continuous(breaks = seq(0, 500, 50), limits = c(0, 500)) +
+  labs(title = "AQI Distribution by Category", x = "AQI", y = "Count") +
+  theme_minimal(base_size = 14)
+
+3. Pollutant Relationship Scatter Plot (PM2.5 vs NO)
+
+
+ggplot(your_data, aes(x = `PM2.5`, y = NO, color = AQI_Bucket, size = O3, shape = City)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Relationship between PM2.5 and NO",
+       x = "PM2.5", y = "NO", size = "O3", color = "AQI Bucket") +
+  theme_classic(base_size = 14)
+
+4. Faceted Histogram of CO by AQI_Bucket
+
+ggplot(your_data, aes(x = CO, fill = AQI_Bucket)) +
+  geom_histogram(binwidth = 0.5, color = "black") +
+  facet_wrap(~ AQI_Bucket, scales = "free_y") +
+  labs(title = "CO Distribution by AQI Bucket", x = "CO", y = "Count") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid = element_blank())
+
+5. SO2 Line Type Comparison for Two Cities
+
+ggplot(your_data %>% filter(City %in% c("Delhi", "Chennai")), 
+       aes(x = Date, y = SO2, linetype = City)) +
+  geom_line(size = 1) +
+  labs(title = "SO2 Levels Comparison: Delhi vs Chennai",
+       x = "Date", y = "SO2") +
+  theme_minimal(base_size = 14)
+
+6. Annotate Day with Maximum AQI
+
+library(dplyr)
+
+max_aqi_day <- your_data %>% filter(AQI == max(AQI, na.rm = TRUE))
+
+ggplot(your_data, aes(x = `PM2.5`, y = PM10)) +
+  geom_point(alpha = 0.5) +
+  geom_point(data = max_aqi_day, aes(x = `PM2.5`, y = PM10), 
+             color = "red", size = 4) +
+  geom_text(data = max_aqi_day, aes(label = paste("Max AQI:", AQI)), 
+            vjust = -1, color = "red") +
+  labs(title = "PM2.5 vs PM10 with Max AQI Highlighted",
+       x = "PM2.5", y = "PM10") +
+  theme_light(base_size = 14)
